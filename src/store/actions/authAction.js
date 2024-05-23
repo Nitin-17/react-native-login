@@ -1,18 +1,32 @@
-import { LOGIN_REQUEST } from "./types";
-import { LOGIN_SUCCESS } from "./types";
-import { LOGIN_FAILURE } from "./types";
+import axios from "axios";
+import API from "../../utils/api-config/api-config";
+import { createAsyncThunk } from "@reduxjs/toolkit";
 
-export const login = (credentials) => ({
-  type: LOGIN_REQUEST,
-  payload: credentials, // Pass login credentials (username/email, password)
-});
+const API_URL = API.signup;
 
-export const loginSuccess = (user) => ({
-  type: LOGIN_SUCCESS,
-  payload: user, // User data received from the server (optional)
-});
-
-export const loginFailure = (error) => ({
-  type: LOGIN_FAILURE,
-  payload: error, // Error message from the server (optional)
-});
+export const registerUser = createAsyncThunk(
+  "auth/register",
+  async (params, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(`${API_URL}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(params),
+      });
+      if (!response.ok) {
+        throw new Error("Registration failed");
+      }
+      const responseData = await response.json();
+      return responseData;
+    } catch (error) {
+      if (error.response && error.response.data.message) {
+        console.error("Login error:", error);
+        return rejectWithValue(error.response.data.message);
+      } else {
+        return rejectWithValue(error.message);
+      }
+    }
+  }
+);

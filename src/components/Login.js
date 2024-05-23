@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -13,8 +13,54 @@ import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import Feather from "react-native-vector-icons/Feather";
 import CustomButton from "./CustomButton";
 import InputField from "./InputField";
+import { _setLoginInfo } from "../helper/localStorage";
+import { encrypt } from "../utils/auth";
 
 const Login = ({ navigation }) => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [message, setMessage] = useState("");
+
+  const loginHandler = async () => {
+    console.log(email, password);
+    try {
+      const params = {
+        emailAddress: email,
+        password: password,
+        timeZone: "Kolkata",
+        action: "login",
+      };
+
+      console.log("Encrypted password", encrypt(params.password));
+
+      if (true) {
+        const response = await Login({
+          ...params,
+          password: encrypt(params.password),
+        });
+
+        if (response.success) {
+          setMessage(`Login successful: ${response.message}`);
+          _setLoginInfo(response);
+          localStorage.setItem("accessToken", response.accessToken);
+          localStorage.setItem("isButtonClicked", false);
+          //navigate("/dashboard");
+        } else {
+          setMessage(`Login failed: ${response.message}`);
+        }
+      } else {
+        console.log("Wrongggggg");
+        setMessage("Wrong Username or Password");
+      }
+    } catch (error) {
+      console.log("error-------", error);
+      console.error("Error during Login:", error);
+      setMessage("Wrong Username or Password ");
+      //openModal();
+      //setModalTitle("Wrong Password");
+    }
+  };
+
   return (
     <SafeAreaView style={styles.loginContainer}>
       <ScrollView
@@ -32,6 +78,8 @@ const Login = ({ navigation }) => {
           label={"Email"}
           icon={<MaterialIcons name="email" size={18} color="#666" />}
           keyboardType="email-address"
+          value={email}
+          onChangeText={(text) => setEmail(text)}
         />
 
         <InputField
@@ -40,9 +88,11 @@ const Login = ({ navigation }) => {
           keyboardType="password"
           fieldButtonLabel={"Forgot?"}
           fieldButtonFunction={() => {}}
+          value={password}
+          onChangeText={(text) => setPassword(text)}
         />
 
-        <CustomButton label={"Login"} onPress={() => {}} />
+        <CustomButton label={"Login"} onPress={loginHandler} />
         <View style={styles.otherLoginMethodContainer}>
           <Text style={styles.otherLoginMethodText}>Or</Text>
         </View>

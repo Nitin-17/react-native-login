@@ -12,13 +12,17 @@ import {
 import AuthStack from "./src/navigation/AuthStack";
 import AppStack from "./src/navigation/AppStack";
 import { NavigationContainer } from "@react-navigation/native";
+import { Provider } from "react-redux";
+import store from "./src/store/store/reduxStore.js";
 
 export default function App() {
   return (
-    <NavigationContainer>
-      <AuthStack />
-      {/* <AppStack /> */}
-    </NavigationContainer>
+    <Provider store={store}>
+      <NavigationContainer>
+        <AuthStack />
+        {/* <AppStack /> */}
+      </NavigationContainer>
+    </Provider>
   );
 }
 

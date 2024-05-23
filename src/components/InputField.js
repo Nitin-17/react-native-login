@@ -14,6 +14,8 @@ const InputField = ({
   keyboardType,
   fieldButtonLabel,
   fieldButtonFunction,
+  value,
+  onChangeText,
 }) => {
   return (
     <View style={styles.passwordView}>
@@ -24,6 +26,8 @@ const InputField = ({
           style={styles.passwordTextInput}
           secureTextEntry={true}
           keyboardType={keyboardType}
+          value={value}
+          onChangeText={onChangeText}
         />
       ) : (
         <TextInput
@@ -31,6 +35,8 @@ const InputField = ({
           style={styles.passwordTextInput}
           secureTextEntry={true}
           keyboardType={keyboardType}
+          value={value}
+          onChangeText={onChangeText}
         />
       )}
       <TouchableOpacity onPress={fieldButtonFunction}>

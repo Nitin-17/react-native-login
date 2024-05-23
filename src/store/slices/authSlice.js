@@ -1,18 +1,32 @@
+// authSlice.js
 import { createSlice } from "@reduxjs/toolkit";
+import { registerUser } from "../actions/authAction";
 
 const initialState = {
   loading: false,
-  userInfo: {}, // for user object
-  userToken: null, // for storing the JWT
+  userInfo: null,
+  userToken: null,
   error: null,
-  success: false, // for monitoring the registration process.
+  success: false,
 };
 
 const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {},
-  extraReducers: {},
+  extraReducers: (builder) => {
+    builder.addCase(registerUser.pending, (state, action) => {
+      state.loading = true;
+      state.error = null;
+    });
+    builder.addCase(registerUser.fulfilled, (state, action) => {
+      state.loading = false;
+      state.success = true;
+    });
+    builder.addCase(registerUser.rejected, (state, action) => {
+      state.loading = false;
+      state.error = payload;
+    });
+  },
 });
-
 export default authSlice.reducer;
